@@ -5,7 +5,7 @@ app.config.from_pyfile("config.py")
 
 @app.route('/')
 def main():
-    return render_template("hello.html")
+    return render_template("base.html")
 
 @app.route('/homepage') 
 def home():

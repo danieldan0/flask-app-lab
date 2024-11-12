@@ -1,0 +1,85 @@
+/* Custom CSS for Resume Website */
+
+/* General Styles */
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+
+.container {
+    margin-top: 20px;
+}
+
+/* Header Styles */
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.header p {
+    font-size: 1.2em;
+    color: #6c757d;
+}
+
+/* Education Section Styles */
+.education-section {
+    margin-bottom: 20px;
+}
+
+.education-item {
+    margin-bottom: 10px;
+}
+
+.education-item h3 {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.education-item p {
+    font-size: 1.1em;
+    color: #6c757d;
+}
+
+/* Skills Section Styles */
+.skills-section {
+    margin-bottom: 20px;
+}
+
+.skills-category {
+    margin-bottom: 10px;
+}
+
+.skills-category h3 {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.skills-category p {
+    font-size: 1.1em;
+    color: #6c757d;
+}
+
+/* Projects Section Styles */
+.projects-section {
+    margin-bottom: 20px;
+}
+
+.project-item {
+    margin-bottom: 10px;
+}
+
+.project-item h3 {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.project-item p {
+    font-size: 1.1em;
+    color: #6c757d;
+}

@@ -83,3 +83,11 @@ body {
     font-size: 1.1em;
     color: #6c757d;
 }
+
+/* Horizontal Separator Styles */
+hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, rgba(52, 58, 64, 0), rgba(52, 58, 64, 0.5), rgba(52, 58, 64, 0));
+    margin: 40px 0;
+}

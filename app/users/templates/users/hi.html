@@ -15,8 +15,8 @@
     <!-- Main content -->
     <h2>Hello, {{ name }}!</h2>
     {% if age %}
-        <p>You are {{ age }} years old.</p>
+        <p class="age-known">You are {{ age }} years old.</p>
     {% else %}
-        <p>Age is unknown.</p>
+        <p class="age-unknown">Age is unknown.</p>
     {% endif %}
 {% endblock %}

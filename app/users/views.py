@@ -31,9 +31,14 @@ def login_post():
         flash("Invalid username or password")
         return redirect(url_for("users.login"))
 
-@user_bp.route("/profile")
+@user_bp.route("/profile", methods=["GET", "POST"])
 def profile():
     if session.get("user") is not None:
+        if request.method == 'POST':
+            background_color = request.form.get('background_color')
+            text_color = request.form.get('text_color')
+            # Save the theme settings to localStorage using JavaScript
+            return render_template('profile.html', cookies=request.cookies.to_dict(), background_color=background_color, text_color=text_color)
         return render_template("profile.html", cookies=request.cookies.to_dict())
     else:
         flash("Session error")

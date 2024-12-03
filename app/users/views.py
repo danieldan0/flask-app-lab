@@ -34,12 +34,7 @@ def login_post():
 @user_bp.route("/profile", methods=["GET", "POST"])
 def profile():
     if session.get("user") is not None:
-        if request.method == 'POST':
-            background_color = request.form.get('background_color')
-            text_color = request.form.get('text_color')
-            # Save the theme settings to localStorage using JavaScript
-            return render_template('profile.html', cookies=request.cookies.to_dict(), background_color=background_color, text_color=text_color)
-        return render_template("profile.html", cookies=request.cookies.to_dict())
+        return render_template("profile.html", cookies=request.cookies.to_dict(), theme=request.cookies.get("theme", "light"))
     else:
         flash("Session error")
         return redirect(url_for("users.login"))
@@ -75,4 +70,11 @@ def delete_all_cookies():
     response = make_response(redirect(url_for("users.profile")))
     for key in request.cookies:
         response.delete_cookie(key)
+    return response
+
+@user_bp.route("/set_theme", methods=["POST"])
+def set_theme():
+    theme = request.form.get("theme")
+    response = make_response(redirect(url_for("users.profile")))
+    response.set_cookie("theme", theme)
     return response

@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}login{% endblock %} 
+{% block head %}
+    {{ super() }}
+    {% if theme == 'dark' %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/dark.css') }}">
+    {% else %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/light.css') }}">
+    {% endif %}
+{% endblock %}
 {% block content %}
 <div class="container-fluid">
     <div class="row">
@@ -11,17 +19,16 @@
     </div>
     <div class="row mt-4">
         <div class="col-md-8">
-            <h2>Customize Page Theme</h2>
-            <form method="post" action="{{ url_for('users.profile') }}">
+            <h2>Theme Selector</h2>
+            <form method="post" action="{{ url_for('users.set_theme') }}">
                 <div class="form-group">
-                    <label for="background_color">Background Color</label>
-                    <input type="color" class="form-control" id="background_color" name="background_color" required>
+                    <label for="theme">Select Theme</label>
+                    <select class="form-control" id="theme" name="theme">
+                        <option value="light" {% if theme == 'light' %}selected="selected"{% endif %}>Light</option>
+                        <option value="dark" {% if theme == 'dark' %}selected="selected"{% endif %}>Dark</option>
+                    </select>
                 </div>
-                <div class="form-group">
-                    <label for="text_color">Text Color</label>
-                    <input type="color" class="form-control" id="text_color" name="text_color" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Update Theme</button>
+                <button type="submit" class="btn btn-primary">Set Theme</button>
             </form>
         </div>
     </div>
@@ -61,15 +68,15 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">Cookie Name</th>
-                        <th scope="col">Cookie Value</th>
+                        <th scope="col" class="cell">Cookie Name</th>
+                        <th scope="col" class="cell">Cookie Value</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for key, value in cookies.items() %}
                         <tr>
-                            <td>{{ key }}</td>
-                            <td>{{ value }}</td>
+                            <td class="cell">{{ key }}</td>
+                            <td class="cell">{{ value }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -77,30 +84,4 @@
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        {% if background_color %}
-            localStorage.setItem("background_color", "{{ background_color }}");
-        {% endif %}
-        {% if text_color %}
-            localStorage.setItem("text_color", "{{ text_color }}");
-        {% endif %}
-        const backgroundColor = localStorage.getItem('background_color');
-        const textColor = localStorage.getItem('text_color');
-        if (backgroundColor) {
-            document.body.style.backgroundColor = backgroundColor;
-            document.getElementById('background_color').value = backgroundColor;
-        }
-        if (textColor) {
-            document.body.style.color = textColor;
-            document.querySelectorAll('th').forEach(function(th) {
-                th.style.color = textColor;
-            });
-            document.querySelectorAll('td').forEach(function(td) {
-                td.style.color = textColor;
-            });
-            document.getElementById('text_color').value = textColor;
-        }
-    });
-</script>
 {% endblock %}

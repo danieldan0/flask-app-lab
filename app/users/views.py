@@ -1,5 +1,6 @@
 from flask import request, redirect, url_for, render_template, abort, flash, session, make_response
 from . import user_bp
+from datetime import timedelta
 
 @user_bp.route("/hi/<string:name>")   #/hi/ivan?age=45&q=fdfdf
 def greetings(name):
@@ -76,5 +77,5 @@ def delete_all_cookies():
 def set_theme():
     theme = request.form.get("theme")
     response = make_response(redirect(url_for("users.profile")))
-    response.set_cookie("theme", theme)
+    response.set_cookie("theme", theme, max_age=timedelta(days=400))
     return response

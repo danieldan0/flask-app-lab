@@ -1,4 +1,4 @@
-from flask import request, redirect, url_for, render_template, abort, flash, session
+from flask import request, redirect, url_for, render_template, abort, flash, session, make_response
 from . import user_bp
 
 @user_bp.route("/hi/<string:name>")   #/hi/ivan?age=45&q=fdfdf
@@ -34,7 +34,7 @@ def login_post():
 @user_bp.route("/profile")
 def profile():
     if session.get("user") is not None:
-        return render_template("profile.html")
+        return render_template("profile.html", cookies=request.cookies.to_dict())
     else:
         flash("Session error")
         return redirect(url_for("users.login"))
@@ -43,3 +43,31 @@ def profile():
 def logout():
     session.pop("user", default=None)
     return redirect(url_for("users.login"))
+
+@user_bp.route("/add_cookie", methods=["POST"])
+def add_cookie():
+    key = request.form.get("cookie_name")
+    value = request.form.get("cookie_value")
+    lifespan = request.form.get("cookie_expires")
+    response = make_response(redirect(url_for("users.profile")))
+    try:
+        lifespan = float(lifespan)
+        response.set_cookie(key, value, max_age=lifespan)
+    except ValueError:
+        flash("Invalid cookie lifespan")
+    return response
+    
+
+@user_bp.route("/delete_cookie", methods=["POST"])
+def delete_cookie():
+    key = request.form.get("delete_cookie_name")
+    response = make_response(redirect(url_for("users.profile")))
+    response.delete_cookie(key)
+    return response
+
+@user_bp.route("/delete_all_cookies", methods=["POST"])
+def delete_all_cookies():
+    response = make_response(redirect(url_for("users.profile")))
+    for key in request.cookies:
+        response.delete_cookie(key)
+    return response

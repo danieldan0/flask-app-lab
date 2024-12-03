@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}login{% endblock %} 
+{% block content %}
+<h1>Ласкаво просимо до сторінки {{ session.user }}</h1>
+<p>Тут ви можете отримати інформацію чи вийти з системи</p>
+<a href="{{ url_for('users.logout') }}">Вийти</a>
+{% endblock %}

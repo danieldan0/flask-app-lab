@@ -33,7 +33,7 @@ def login_post():
 
 @user_bp.route("/profile")
 def profile():
-    if session["user"] is not None:
+    if session.get("user") is not None:
         return render_template("profile.html")
     else:
         flash("Session error")

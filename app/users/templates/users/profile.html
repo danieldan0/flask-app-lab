@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}login{% endblock %} 
 {% block content %}
-<h1>Ласкаво просимо до сторінки {{ session.user }}</h1>
-<p>Тут ви можете отримати інформацію чи вийти з системи</p>
-<a href="{{ url_for('users.logout') }}">Вийти</a>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>Ласкаво просимо до сторінки 👤{{ session.user }}</h1>
+            <p>Тут ви можете отримати інформацію чи вийти з системи</p>
+            <a href="{{ url_for('users.logout') }}" class="btn btn-primary">Вийти</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

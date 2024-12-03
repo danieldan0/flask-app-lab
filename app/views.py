@@ -28,3 +28,7 @@ def detail_post(id):
         abort(404)
     post = posts[id-1]
     return render_template("detail_post.html", post=post)
+
+@app.route('/resume')
+def resume():
+    return render_template("resume.html")

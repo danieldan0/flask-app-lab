@@ -4,7 +4,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
-<link rel="stylesheet" href="{{ url_for('static', filename='css/posts.css')}}">
+<link rel="stylesheet" href="{{ url_for('.static', filename='css/posts.css')}}">
 {% endblock %}
 
 {% block content %}
@@ -19,7 +19,7 @@
         {% for post in posts %}
         <div class="col-md-6 col-lg-4 mt-5 wow fadeInUp" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
             <div class="blog-grid">
-                <div class="blog-grid-img position-relative"><img alt="img" src="https://www.bootdey.com/image/480x480/00FFFF/000000"></div>
+                <div class="blog-grid-img position-relative"><img alt="img" src="{{ url_for('.static', filename='img/default.png')}}"></div>
                 <div class="blog-grid-text p-4">
                     <h3 class="h5 mb-3"><a href="{{ url_for('posts.detail_post', id=post['id']) }}">{{ post["title"] }}</a></h3>
                     <p class="display-30">{{ post.get("content") | truncate(20) }}</p>

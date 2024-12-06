@@ -16,5 +16,14 @@
         "category": "lifestyle",
         "is_active": true,
         "publish_date": "2024-12-04"
+    },
+    {
+        "id": 3,
+        "title": "This is a test",
+        "content": "This is the content of a post. It can extend for a while. It is usually filled with some important information.",
+        "author": "admin",
+        "category": "tech",
+        "is_active": true,
+        "publish_date": "2024-12-07"
     }
 ]

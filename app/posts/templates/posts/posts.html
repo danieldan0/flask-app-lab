@@ -18,10 +18,10 @@
     <div class="row mt-n5">
         {% for post in posts %}
         <div class="col-md-6 col-lg-4 mt-5 wow fadeInUp" data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
-            <div class="blog-grid">
+            <div class="blog-grid my-post">
                 <div class="blog-grid-img position-relative"><img alt="img" src="{{ url_for('.static', filename='img/default.png')}}"></div>
                 <div class="blog-grid-text p-4">
-                    <h3 class="h5 mb-3"><a href="{{ url_for('posts.detail_post', id=post['id']) }}">{{ post["title"] }}</a></h3>
+                    <h3 class="h5 mb-3"><a href="{{ url_for('posts.detail_post', id=post['id']) }}">{{ post["title"] | title }}</a></h3>
                     <p class="display-30">{{ post.get("content") | truncate(20) }}</p>
                     <div class="meta meta-style2">
                         <ul>

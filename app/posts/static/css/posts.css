@@ -223,3 +223,8 @@ a, a:active, a:focus {
 .mt-6, .my-6 {
     margin-top: 3.5rem;
 }
+
+.my-post {
+    background-color: #54c0eb;
+    color: #1e5897;
+}

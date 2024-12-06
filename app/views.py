@@ -1,5 +1,4 @@
-from flask import request, redirect, url_for, render_template, abort
-from . import app
+from flask import request, redirect, url_for, render_template, abort, current_app as app
 
 @app.route('/')
 def main():

@@ -1,5 +1,5 @@
 from . import post_bp
-from flask import render_template, abort, flash, redirect, url_for, request
+from flask import render_template, abort, flash, redirect, url_for, request, session
 from .forms import PostForm
 from .utils import load_posts, save_post, get_post
 
@@ -16,7 +16,10 @@ def add_post():
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
-        new_post = {"id": len(load_posts()) + 1, 'title': title, 'content': content}
+        category = form.category.data
+        is_active = form.is_active.data
+        publish_date = form.publish_date.data.strftime("%Y-%m-%d") 
+        new_post = {"id": len(load_posts()) + 1, 'title': title, 'content': content, 'author': session.get("user", "Anonymous"), 'category': category, 'is_active': is_active, 'publish_date': publish_date}
         save_post(new_post)
         flash(f"Post {title} added successfully!", "success")
         return redirect(url_for(".get_posts"))

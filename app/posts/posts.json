@@ -48,5 +48,14 @@
         "id": 10,
         "title": "test",
         "content": "test"
+    },
+    {
+        "id": 11,
+        "title": "this is a test",
+        "content": "fgghghgfhfgh",
+        "author": "admin",
+        "category": "science",
+        "is_active": false,
+        "publish_date": "2024-12-06"
     }
 ]

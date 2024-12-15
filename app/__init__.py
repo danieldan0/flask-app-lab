@@ -23,6 +23,7 @@ def create_app(config_name="config"):
         app.register_blueprint(user_bp)
 
         from .posts import post_bp
+        from .posts.models import Post
         app.register_blueprint(post_bp)
     
     return app

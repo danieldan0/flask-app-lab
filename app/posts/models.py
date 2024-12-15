@@ -10,4 +10,4 @@ class Post(db.Model):
     posted = db.Column(db.DateTime, index=True, default=dt.now())
 
     def __repr__(self):
-        return f"<Post {self.title}>"
+        return f"<Post(title={self.title})>"

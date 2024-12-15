@@ -5,18 +5,22 @@ from .utils import load_posts, save_post, get_post
 
 from .models import Post
 from app import db
+from app.users.models import User
 
 
 @post_bp.route('/add_post', methods=["GET", "POST"]) 
 def add_post():
     form = PostForm()
+    authors = User.query.all()
+    form.author_id.choices = [(author.id, author.username) for author in authors]
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
         category = form.category.data
         is_active = form.is_active.data
         publish_date = form.publish_date.data
-        new_post = Post(title=title, content=content, category=category, is_active=is_active, posted=publish_date, author=session.get("username", "anonymous"))
+        author_id = form.author_id.data
+        new_post = Post(title=title, content=content, category=category, is_active=is_active, posted=publish_date, user_id=author_id)
         db.session.add(new_post)
         db.session.commit()
         flash(f"Post {title} added successfully!", "success")

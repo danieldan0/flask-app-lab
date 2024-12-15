@@ -26,7 +26,7 @@
                     <div class="meta meta-style2">
                         <ul>
                             <li><a href="#!"><i class="fas fa-tag"></i> {{ post.category | capitalize }}</a></li>
-                            <li><a href="#!"><i class="fas fa-calendar-alt"></i> {{ post["publish_date"]}}</a></li>
+                            <li><a href="#!"><i class="fas fa-calendar-alt"></i> {{ post.posted.strftime('%Y-%m-%d') }}</a></li>
                             <li><a href="#!"><i class="fas fa-user"></i> {{ post["author"] }}</a></li>
                         </ul>
                     </div>

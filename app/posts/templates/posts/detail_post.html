@@ -8,6 +8,8 @@
 
     <p>{{ post.content }}</p>
 
+    <p>Tags: {{ post.tags | map(attribute="name") | join(" | ") }}</p>
+
     <a href="{{url_for('posts.get_posts')}}">Return posts</a>
 
 {% endblock %}

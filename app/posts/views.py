@@ -6,6 +6,7 @@ from .utils import load_posts, save_post, get_post
 from .models import Post
 from app import db
 from app.users.models import User
+from app.posts.models import Tag
 
 
 @post_bp.route('/add_post', methods=["GET", "POST"]) 
@@ -13,6 +14,8 @@ def add_post():
     form = PostForm()
     authors = User.query.all()
     form.author_id.choices = [(author.id, author.username) for author in authors]
+    tags = Tag.query.all()
+    form.tags.choices = [(tag.id, tag.name) for tag in tags]
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
@@ -20,7 +23,9 @@ def add_post():
         is_active = form.is_active.data
         publish_date = form.publish_date.data
         author_id = form.author_id.data
-        new_post = Post(title=title, content=content, category=category, is_active=is_active, posted=publish_date, user_id=author_id)
+        tag_ids = form.tags.data
+        selected_tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
+        new_post = Post(title=title, content=content, category=category, is_active=is_active, posted=publish_date, user_id=author_id, tags=selected_tags)
         db.session.add(new_post)
         db.session.commit()
         flash(f"Post {title} added successfully!", "success")

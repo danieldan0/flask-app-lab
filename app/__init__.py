@@ -20,6 +20,7 @@ def create_app(config_name="config"):
     with app.app_context():
         from . import views
         from .users import user_bp
+        from .users.models import User
         app.register_blueprint(user_bp)
 
         from .posts import post_bp

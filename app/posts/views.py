@@ -3,11 +3,8 @@ from flask import render_template, abort, flash, redirect, url_for, request, ses
 from .forms import PostForm
 from .utils import load_posts, save_post, get_post
 
-posts = [
-    {"id": 1, 'title': 'My First Post', 'content': 'This is the content of my first post.', 'author': 'John Doe'},
-    {"id": 2, 'title': 'Another Day', 'content': 'Today I learned about Flask macros.', 'author': 'Jane Smith'},
-    {"id": 3, 'title': 'Flask and Jinja2', 'content': 'Jinja2 is powerful for templating.', 'author': 'Mike Lee'}
-] 
+from .models import Post
+from app import db
 
 
 @post_bp.route('/add_post', methods=["GET", "POST"]) 
@@ -18,9 +15,10 @@ def add_post():
         content = form.content.data
         category = form.category.data
         is_active = form.is_active.data
-        publish_date = form.publish_date.data.strftime("%Y-%m-%d") 
-        new_post = {"id": len(load_posts()) + 1, 'title': title, 'content': content, 'author': session.get("user", "Anonymous"), 'category': category, 'is_active': is_active, 'publish_date': publish_date}
-        save_post(new_post)
+        publish_date = form.publish_date.data
+        new_post = Post(title=title, content=content, category=category, is_active=is_active, posted=publish_date)
+        db.session.add(new_post)
+        db.session.commit()
         flash(f"Post {title} added successfully!", "success")
         return redirect(url_for(".get_posts"))
     elif request.method == "POST":
@@ -30,11 +28,13 @@ def add_post():
 
 @post_bp.route('/') 
 def get_posts():
-    return render_template("posts.html", posts=load_posts())
+    stmt = db.select(Post).order_by(Post.title)
+    posts = db.session.scalars(stmt).all()
+    return render_template("posts.html", posts=posts)
 
 @post_bp.route('/<int:id>') 
 def detail_post(id):
-    post = get_post(id)
+    post = db.get_or_404(Post, id)
     if not post:
         return abort(404)
     return render_template("detail_post.html", post=post)

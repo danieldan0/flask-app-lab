@@ -16,7 +16,7 @@ def add_post():
         category = form.category.data
         is_active = form.is_active.data
         publish_date = form.publish_date.data
-        new_post = Post(title=title, content=content, category=category, is_active=is_active, posted=publish_date)
+        new_post = Post(title=title, content=content, category=category, is_active=is_active, posted=publish_date, author=session.get("username", "anonymous"))
         db.session.add(new_post)
         db.session.commit()
         flash(f"Post {title} added successfully!", "success")
@@ -38,3 +38,27 @@ def detail_post(id):
     if not post:
         return abort(404)
     return render_template("detail_post.html", post=post)
+
+@post_bp.route('/edit/<int:id>', methods=["GET", "POST"])
+def edit_post(id):
+    post = db.get_or_404(Post, id)
+    form = PostForm(obj=post)
+    form.publish_date.data = post.posted
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        post.category = form.category.data
+        post.is_active = form.is_active.data
+        post.posted = form.publish_date.data
+        db.session.commit()
+        flash(f"Post {post.title} updated successfully!", "success")
+        return redirect(url_for(".get_posts"))
+    return render_template("add_post.html", form=form)
+
+@post_bp.route('/delete/<int:id>', methods=["GET", "POST"])
+def delete_post(id):
+    post = db.get_or_404(Post, id)
+    db.session.delete(post)
+    db.session.commit()
+    flash(f"Post {post.title} deleted successfully!", "success")
+    return redirect(url_for(".get_posts"))

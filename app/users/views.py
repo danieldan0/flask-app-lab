@@ -1,6 +1,9 @@
 from flask import request, redirect, url_for, render_template, abort, flash, session, make_response
 from . import user_bp
 from datetime import timedelta
+from .forms import RegistrationForm
+from .models import User
+from app import db
 
 @user_bp.route("/hi/<string:name>")   #/hi/ivan?age=45&q=fdfdf
 def greetings(name):
@@ -79,3 +82,18 @@ def set_theme():
     response = make_response(redirect(url_for("users.profile")))
     response.set_cookie("theme", theme, max_age=timedelta(days=400))
     return response
+
+@user_bp.route("/register", methods=["GET", "POST"])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        password = form.password.data
+        hashed_password = User.hash_password(password)
+        user = User(username=username, email=email, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        flash("Registration successful", "success")
+        return redirect(url_for("users.login"))
+    return render_template("register.html", form=form)

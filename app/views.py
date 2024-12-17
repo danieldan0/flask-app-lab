@@ -4,7 +4,7 @@ from flask import request, redirect, url_for, render_template, abort, current_ap
 def main():
     return render_template("base.html")
 
-@app.route('/homepage') 
+@app.route('/homepage', endpoint='home') 
 def home():
     """View for the Home page of your website."""
     agent = request.user_agent

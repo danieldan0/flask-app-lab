@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from sqlalchemy.orm import DeclarativeBase
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
+from config import config
 
 class Base(DeclarativeBase):
     pass
@@ -14,9 +15,9 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 
 
-def create_app(config_name="config"):
+def create_app(config_name="default"):
     app = Flask(__name__)
-    app.config.from_object(config_name)
+    app.config.from_object(config.get(config_name))
 
     db.init_app(app)
     migrate.init_app(app, db)

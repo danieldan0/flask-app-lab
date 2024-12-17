@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %} Account {% endblock %}
+{% block content %}
+{% if user %}
+<div class="container-fluid">
+    <div class="row">
+        <h5>{{user.username}}'s Account</h5>
+    </div>
+    <div class="row">
+        <h4>Session Data</h4>
+    </div>
+    <div class="row">
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            {% for key, value in session.items() %}
+            <tr>
+                <td>{{key}}</td>
+                <td>{{value}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

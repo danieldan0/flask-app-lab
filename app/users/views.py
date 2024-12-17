@@ -1,7 +1,7 @@
 from flask import request, redirect, url_for, render_template, abort, flash, session, make_response
 from . import user_bp
 from datetime import timedelta
-from .forms import RegistrationForm
+from .forms import RegistrationForm, LoginForm
 from .models import User
 from app import db
 
@@ -19,26 +19,39 @@ def admin():
     print(to_url)
     return redirect(to_url)
 
-@user_bp.route("/login")
+@user_bp.route("/login", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        user = User.query.filter_by(email=email).first()
+        if user and user.check_password(password):
+            session["user_id"] = user.id
+            session["user"] = user.username
+            return redirect(url_for("users.account"))
+        else:
+            flash("Login failed. Please check your email and password", "danger")
+            return redirect(url_for("users.login"))
+    return render_template("login.html", form=form)
 
-@user_bp.route("/login", methods=["POST"])
-def login_post():
-    username = request.form.get("username")
-    password = request.form.get("password")
-    if (username == "admin" and password == "admin"):
-        session["user"] = username
-        flash("Successful login")
-        return redirect(url_for("users.profile"))
-    else:
-        flash("Invalid username or password")
-        return redirect(url_for("users.login"))
+@user_bp.route("/account")
+def account():
+    if session.get("user_id") is not None:
+        user = User.query.get(session["user_id"])
+        return render_template("account.html", user=user)
+    return redirect(url_for("users.login"))
+
+@user_bp.route("/users")
+def users():
+    users = User.query.all()
+    return render_template("users.html", users=users)
 
 @user_bp.route("/profile", methods=["GET", "POST"])
 def profile():
-    if session.get("user") is not None:
-        return render_template("profile.html", cookies=request.cookies.to_dict(), theme=request.cookies.get("theme", "light"))
+    if session.get("user_id") is not None:
+        user = User.query.get(session["user_id"])
+        return render_template("profile.html", user=user, cookies=request.cookies.to_dict(), theme=request.cookies.get("theme", "light"))
     else:
         flash("Session error")
         return redirect(url_for("users.login"))

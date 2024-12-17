@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, EmailField
+from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp
 from .models import User
 
@@ -19,3 +19,19 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError("Email already exists. Please choose a different one.")
+
+class LoginForm(FlaskForm):
+    email = EmailField("Email", validators=[DataRequired(), Email(), Length(max=60)])
+    password = PasswordField("Password", validators=[DataRequired(), Length(max=60)])
+    remember = BooleanField("Remember Me")
+    submit = SubmitField("Login")
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if not user:
+            raise ValidationError("Email not found. Please register first.")
+    
+    def validate_password(self, password):
+        user = User.query.filter_by(email=self.email.data).first()
+        if user and not user.check_password(password.data):
+            raise ValidationError("Incorrect password. Please try again.")

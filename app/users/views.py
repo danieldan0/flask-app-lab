@@ -4,6 +4,7 @@ from datetime import timedelta
 from .forms import RegistrationForm, LoginForm
 from .models import User
 from app import db
+from flask_login import login_user, logout_user, current_user, login_required
 
 @user_bp.route("/hi/<string:name>")   #/hi/ivan?age=45&q=fdfdf
 def greetings(name):
@@ -27,8 +28,7 @@ def login():
         password = form.password.data
         user = User.query.filter_by(email=email).first()
         if user and user.check_password(password):
-            session["user_id"] = user.id
-            session["user"] = user.username
+            login_user(user)
             return redirect(url_for("users.account"))
         else:
             flash("Login failed. Please check your email and password", "danger")
@@ -36,11 +36,9 @@ def login():
     return render_template("login.html", form=form)
 
 @user_bp.route("/account")
+@login_required
 def account():
-    if session.get("user_id") is not None:
-        user = User.query.get(session["user_id"])
-        return render_template("account.html", user=user)
-    return redirect(url_for("users.login"))
+    return render_template("account.html", user=current_user)
 
 @user_bp.route("/users")
 def users():
@@ -57,8 +55,9 @@ def profile():
         return redirect(url_for("users.login"))
 
 @user_bp.route("/logout")
+@login_required
 def logout():
-    session.pop("user", default=None)
+    logout_user()
     return redirect(url_for("users.login"))
 
 @user_bp.route("/add_cookie", methods=["POST"])

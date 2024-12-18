@@ -5,7 +5,19 @@
 {% if user %}
 <div class="container-fluid">
     <div class="row">
-        <h5>{{user.username}}'s Account</h5>
+        <div class="card mb-3 border-0">
+            <div class="row no-gutters">
+                <div class="col">
+                    <img src="{{url_for('.static', filename='img/' + (user.image_file if user.image_file else 'default.png'))}}" class="card-img">
+                </div>
+                <div class="col-9">
+                    <div class="card-body">
+                        <h4 class="card-title">{{user.username}}'s Account</h4>
+                        <p class="card-text text-muted">{{user.email}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row">
         <h4>Session Data</h4>

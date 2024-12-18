@@ -1,10 +1,12 @@
-from flask import request, redirect, url_for, render_template, abort, flash, session, make_response
+from flask import request, redirect, url_for, render_template, abort, flash, session, make_response, current_app
 from . import user_bp
 from datetime import timedelta
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, UpdateAccountForm
 from .models import User
 from app import db
 from flask_login import login_user, logout_user, current_user, login_required
+import os
+import secrets
 
 @user_bp.route("/hi/<string:name>")   #/hi/ivan?age=45&q=fdfdf
 def greetings(name):
@@ -109,3 +111,35 @@ def register():
         flash("Registration successful", "success")
         return redirect(url_for("users.login"))
     return render_template("register.html", form=form)
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = 'pfp/' + random_hex + f_ext
+    picture_path = os.path.join(current_app.root_path, 'users/static/img', picture_fn)
+    form_picture.save(picture_path)
+    return picture_fn
+
+def delete_picture(picture_file):
+    if picture_file and picture_file != "default.png":
+        picture_path = os.path.join(current_app.root_path, 'users/static/img', picture_file)
+        if os.path.exists(picture_path):
+            os.remove(picture_path)
+
+@user_bp.route("/update_account", methods=["GET", "POST"])
+@login_required
+def update_account():
+    form = UpdateAccountForm()
+    form.username.data = current_user.username
+    form.email.data = current_user.email
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        if form.image_file.data:
+            delete_picture(current_user.image_file)
+            picture_file = save_picture(form.image_file.data)
+            current_user.image_file = picture_file
+        db.session.commit()
+        flash("Account updated", "success")
+        return redirect(url_for("users.account"))
+    return render_template("update_account.html", form=form)

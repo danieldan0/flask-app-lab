@@ -11,3 +11,4 @@ htmlcov/
 docs/_build/
 instance/
 instance/data.sqlite
+app/users/static/img/pfp/

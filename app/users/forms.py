@@ -2,6 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, EmailField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp
 from .models import User
+from flask_login import current_user
+from flask_wtf.file import FileField, FileAllowed
 
 class RegistrationForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired(), Length(max=20), Regexp("^[a-zA-Z0-9_.]*$", message="Username must contain only letters, numbers, dots or underscores.")])
@@ -35,3 +37,21 @@ class LoginForm(FlaskForm):
         user = User.query.filter_by(email=self.email.data).first()
         if user and not user.check_password(password.data):
             raise ValidationError("Incorrect password. Please try again.")
+
+class UpdateAccountForm(FlaskForm):
+    username = StringField("Username", validators=[DataRequired(), Length(max=20), Regexp("^[a-zA-Z0-9_.]*$", message="Username must contain only letters, numbers, dots or underscores.")])
+    email = EmailField("Email", validators=[DataRequired(), Email(), Length(max=60)])
+    image_file = FileField("Update Profile Picture", validators=[FileAllowed(("png", "jpg", "jpeg", "gif", "bmp", "webp"), message="Images only!")])
+    submit = SubmitField("Update")
+
+    def validate_username(self, username):
+        if username.data != current_user.username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:
+                raise ValidationError("Username already exists. Please choose a different one.")
+
+    def validate_email(self, email):
+        if email.data != current_user.email:
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError("Email already exists. Please choose a different one.")

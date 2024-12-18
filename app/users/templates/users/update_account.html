@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% from 'form_macros.html' import render_field %}
+{% block title %}Update account{% endblock %} 
+{% block content %}
+    <div class="container mt-5" style="max-width: 500px;">
+        <h2 class="my-4 text-center">Update account</h2>
+        <form method="post" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ render_field(form.username) }}
+            </div>
+            <div class="form-group">
+                {{ render_field(form.email) }}
+            </div>
+            <div class="form-group">
+                {{ form.image_file.label(class="form-label") }}
+                {{ form.image_file(class="form-control-file") }}
+            </div>
+            <button type="submit" class="btn btn-primary mt-3 w-100">Update</button>
+        </form>
+    </div>
+{% endblock %}

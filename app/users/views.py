@@ -1,7 +1,7 @@
 from flask import request, redirect, url_for, render_template, abort, flash, session, make_response, current_app
 from . import user_bp
 from datetime import timedelta, datetime, timezone
-from .forms import RegistrationForm, LoginForm, UpdateAccountForm
+from .forms import RegistrationForm, LoginForm, UpdateAccountForm, UpdatePasswordForm
 from .models import User
 from app import db
 from flask_login import login_user, logout_user, current_user, login_required
@@ -152,3 +152,14 @@ def update_account():
         form.email.data = current_user.email
         form.about_me.data = current_user.about_me
     return render_template("update_account.html", form=form)
+
+@user_bp.route("/update_password", methods=["GET", "POST"])
+@login_required
+def update_password():
+    form = UpdatePasswordForm()
+    if form.validate_on_submit():
+        current_user.password = User.hash_password(form.password.data)
+        db.session.commit()
+        flash("Password updated", "success")
+        return redirect(url_for("users.account"))
+    return render_template("update_password.html", form=form)

@@ -12,6 +12,7 @@
                     <tr>
                         <th>Username</th>
                         <th>Email</th>
+                        <th>Last seen</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -19,6 +20,7 @@
                     <tr>
                         <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
+                        <td><time datetime="{{ user.last_seen.strftime('%Y-%m-%dT%H:%M:%SZ') if user.last_seen }}"></time></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -29,4 +31,17 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const timeElements = document.querySelectorAll("time[datetime]");
+        timeElements.forEach(function(timeElement) {
+            const datetime = timeElement.getAttribute("datetime");
+            if (datetime) {
+                const date = new Date(datetime);
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                timeElement.textContent = date.toLocaleDateString(undefined, options);
+            }
+        });
+    });
+</script>
 {% endblock %}

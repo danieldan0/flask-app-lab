@@ -1,12 +1,18 @@
 from flask import request, redirect, url_for, render_template, abort, flash, session, make_response, current_app
 from . import user_bp
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
 from .forms import RegistrationForm, LoginForm, UpdateAccountForm
 from .models import User
 from app import db
 from flask_login import login_user, logout_user, current_user, login_required
 import os
 import secrets
+
+@user_bp.before_app_request
+def update_last_seen():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.now(timezone.utc)
+        db.session.commit()
 
 @user_bp.route("/hi/<string:name>")   #/hi/ivan?age=45&q=fdfdf
 def greetings(name):
@@ -130,11 +136,10 @@ def delete_picture(picture_file):
 @login_required
 def update_account():
     form = UpdateAccountForm()
-    form.username.data = current_user.username
-    form.email.data = current_user.email
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.email = form.email.data
+        current_user.about_me = form.about_me.data
         if form.image_file.data:
             delete_picture(current_user.image_file)
             picture_file = save_picture(form.image_file.data)
@@ -142,4 +147,8 @@ def update_account():
         db.session.commit()
         flash("Account updated", "success")
         return redirect(url_for("users.account"))
+    elif request.method == "GET":
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+        form.about_me.data = current_user.about_me
     return render_template("update_account.html", form=form)
